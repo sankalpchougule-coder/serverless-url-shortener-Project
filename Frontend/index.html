@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>AWS URL Shortener</title>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #01070f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        width: 500px;
+        text-align: center;
+    }
+
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    #result {
+        margin-top: 20px;
+        word-wrap: break-word;
+    }
+
+    a {
+        color: #007bff;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+    <h1>AWS URL Shortener</h1>
+
+
+<input
+    type="text"
+    id="url"
+    placeholder="Enter URL"
+>
+
+<br><br>
+
+<button onclick="shortenURL()">
+    Shorten URL
+</button>
+
+<div id="result"></div>
+
+
+</div>
+
+<script>
+
+async function shortenURL() {
+
+    const url = document.getElementById("url").value;
+
+    if (!url) {
+        alert("Please enter a URL");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "https://1wyckkfyt7.execute-api.eu-north-1.amazonaws.com/shorten",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    url: url
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").innerHTML =
+        `
+        <p>
+            <strong>Short URL:</strong><br><br>
+            <a href="https://1wyckkfyt7.execute-api.eu-north-1.amazonaws.com/${data.short_id}" target="_blank">
+                https://1wyckkfyt7.execute-api.eu-north-1.amazonaws.com/${data.short_id}
+            </a>
+        </p>
+        `;
+
+    } catch (error) {
+
+        document.getElementById("result").innerHTML =
+        "<p>Error connecting to API.</p>";
+
+        console.error(error);
+    }
+}
+
+</script>
+
+</body>
+</html>
